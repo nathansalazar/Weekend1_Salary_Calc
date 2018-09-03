@@ -3,6 +3,7 @@ button{
     width: 100px;
     height: 50px;
     font-size: 100%;
+    font-weight: bold;
 }
 
 table{
@@ -19,6 +20,13 @@ th, td{
     border: 1px solid black;
 }
 
+tr:nth-child(even){
+    background-color: #dfdddd;
+}
+
+th{
+    background-color: #c7bfbf;
+}
 
 h1{
     margin-left: auto;

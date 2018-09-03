@@ -1,6 +1,7 @@
 let totalMonthly = 0;
 let employeeArray = [];
 
+//create Employee class
 class Employee {
     constructor(firstName, lastName, id, title, salary) {
         this.firstName = firstName;
@@ -17,6 +18,7 @@ function onReady() {
     $('#submitButton').on('click', appendEmployee);
     $('.remove').hide();
     $('tbody').on('click','.remove', removeEmployee);
+    $('#removeByID').on('click',removeByID);
 }
 
 function appendEmployee() {
@@ -41,7 +43,6 @@ function appendEmployee() {
     clearInputFields();
     //show text boxes and button to remove employee
     $('.remove').show();
-
 }
 
 function addEmployeesToTable() {
@@ -94,6 +95,7 @@ function clearInputFields() {
     $('#inputID').val('');
     $('#inputTitle').val('');
     $('#inputSalary').val('');
+    $('#inputIDRemove').val('');
 }
 
 function removeEmployee(){
@@ -114,33 +116,39 @@ function removeEmployee(){
     employeeArray.splice(index, 1);
     //update total monthly
     calculateMonthly();
+    //hide remove buttons if table is empty
+    if(employeeArray.length === 0){
+        $('.remove').hide()
+    }
 }
 
-//maybe add ability to remove employee by id OR name
-// function removeEmployee() {
-//     //create employee object
-//     let newEmployee = new Employee($('#firstNameRemove').val(), $('#lastNameRemove').val(),
-//         $('#inputIDRemove').val(), $('#inputTitleRemove').val(), $('#inputSalaryRemove').val()
-//     );
-//     //search for employee in array
-//     let index = -1;
-//     for (i = 0; i < employeeArray.length; i++) {
-//         if (employeeArray[i].id === newEmployee.id) {
-//             index = i;
-//         }
-//     }
-//     if (index === -1) {
-//         console.log('That person is not in the table')
-//     }
-//     else {
-//         //remove employee from array
-//         employeeArray.splice(index, 1);
-//         //add employees to table
-//         addEmployeesToTable();
 
-//         //calculate monthly salary
-//         //calculateMonthly(newEmployee);
-//         //clear input fields
-//         //clearInputFields();
-//     }
-// }
+function removeByID() {
+    //get ID
+    let tempID = $('#inputIDRemove').val(); 
+    //search for employee in array
+    let index = -1;
+    for (i = 0; i < employeeArray.length; i++) {
+        if (employeeArray[i].id === tempID) {
+            index = i;
+        }
+    }
+    if (index === -1) {
+        alert('ID not found');
+        clearInputFields();
+    }
+    else {
+        //remove employee from array
+        employeeArray.splice(index, 1);
+        //add employees to table
+        addEmployeesToTable();
+        //calculate monthly salary
+        calculateMonthly();
+        //clear input fields
+        clearInputFields();
+    }
+    //hide remove buttons if table is empty
+    if(employeeArray.length === 0){
+        $('.remove').hide()
+    }
+}
