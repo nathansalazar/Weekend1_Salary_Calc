@@ -16,10 +16,16 @@ $(document).ready(onReady);
 function onReady() {
     $('#submitButton').on('click', appendEmployee);
     $('.remove').hide();
-    $('#removeButton').on('click', removeEmployee);
+    $('tbody').on('click','.remove', removeEmployee);
 }
 
 function appendEmployee() {
+    //make sure an employee id has been entered
+    if($('#inputID').val()===''){
+        alert('You must enter an employee ID');
+        return false;
+    }
+
     //create employee object
     let newEmployee = new Employee($('#firstName').val(), $('#lastName').val(),
         $('#inputID').val(), $('#inputTitle').val(), $('#inputSalary').val()
@@ -30,11 +36,12 @@ function appendEmployee() {
     addEmployeesToTable();
 
     //calculate monthly salary
-    calculateMonthly(newEmployee);
+    calculateMonthly();
     //clear input fields
     clearInputFields();
     //show text boxes and button to remove employee
     $('.remove').show();
+
 }
 
 function addEmployeesToTable() {
@@ -49,27 +56,35 @@ function addEmployeesToTable() {
                 <td>`
             + employeeArray[i].lastName +
             `</td>
-                <td>`
+                <td class="id">`
             + employeeArray[i].id +
             `</td>
                 <td>`
             + employeeArray[i].title +
             `</td>
-                <td>`
+                <td class="salary">`
             + employeeArray[i].salary +
             `</td>
+                <td>
+            <button class="remove">Remove Employee</button>
+            </td>
             </tr>`)
     }
 }
 
-function calculateMonthly(employee) {
-    let monthlySalary = Number(employee.salary) / 12
-    totalMonthly += Number(monthlySalary.toFixed(2));
+function calculateMonthly() {
+    totalMonthly = 0;
+    for(employee of employeeArray){
+        totalMonthly += Number( (employee.salary/12).toFixed(2) );
+    }
     $('#totalMonthly').empty();
     $('#totalMonthly').append('Total Monthly: $' + totalMonthly);
     //check that total monthly is less than $20,000
     if (totalMonthly > 20000) {
         $('#totalMonthly').css('background-color', 'red');
+    }
+    else{
+        $('#totalMonthly').css('background-color', 'white'); 
     }
 }
 
@@ -81,30 +96,51 @@ function clearInputFields() {
     $('#inputSalary').val('');
 }
 
-function removeEmployee() {
-    //create employee object
-    let newEmployee = new Employee($('#firstNameRemove').val(), $('#lastNameRemove').val(),
-        $('#inputIDRemove').val(), $('#inputTitleRemove').val(), $('#inputSalaryRemove').val()
-    );
+function removeEmployee(){
+    //find id and salary
+    let tempID = $(this).parent().siblings(".id").html();
+    let tempSalary = $(this).parent().siblings(".salary").html();
+    //delete row 
+    $(this).parents()[1].remove();
+    
     //search for employee in array
     let index = -1;
     for (i = 0; i < employeeArray.length; i++) {
-        if (employeeArray[i].id === newEmployee.id) {
+        if (employeeArray[i].id === tempID) {
             index = i;
         }
     }
-    if (index === -1) {
-        console.log('That person is not in the table')
-    }
-    else {
-        //remove employee from array
-        employeeArray.splice(index, 1);
-        //add employees to table
-        addEmployeesToTable();
-
-        //calculate monthly salary
-        //calculateMonthly(newEmployee);
-        //clear input fields
-        //clearInputFields();
-    }
+    //remove employee from array
+    employeeArray.splice(index, 1);
+    //update total monthly
+    calculateMonthly();
 }
+
+//maybe add ability to remove employee by id OR name
+// function removeEmployee() {
+//     //create employee object
+//     let newEmployee = new Employee($('#firstNameRemove').val(), $('#lastNameRemove').val(),
+//         $('#inputIDRemove').val(), $('#inputTitleRemove').val(), $('#inputSalaryRemove').val()
+//     );
+//     //search for employee in array
+//     let index = -1;
+//     for (i = 0; i < employeeArray.length; i++) {
+//         if (employeeArray[i].id === newEmployee.id) {
+//             index = i;
+//         }
+//     }
+//     if (index === -1) {
+//         console.log('That person is not in the table')
+//     }
+//     else {
+//         //remove employee from array
+//         employeeArray.splice(index, 1);
+//         //add employees to table
+//         addEmployeesToTable();
+
+//         //calculate monthly salary
+//         //calculateMonthly(newEmployee);
+//         //clear input fields
+//         //clearInputFields();
+//     }
+// }
