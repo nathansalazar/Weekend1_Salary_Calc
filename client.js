@@ -66,8 +66,8 @@ function addEmployeesToTable() {
                 <td class="salary">`
             + employeeArray[i].salary +
             `</td>
-                <td>
-            <button class="remove">Remove Employee</button>
+                <td class="removeButton">
+            <button class="removeButton">Remove Employee</button>
             </td>
             </tr>`)
     }
